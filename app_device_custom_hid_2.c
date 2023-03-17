@@ -26,6 +26,7 @@ please contact mla_licensing@microchip.com
 //#include "timers.h"
 //#include "SparkFun_ProDriver_TC78H670FTG_Library.h"
 #include "app_device_custom_hid.h"
+#include <usart.h>
 
 /** VARIABLES ******************************************************/
 /* Some processors have a limited range of RAM addresses where the USB module
@@ -99,6 +100,7 @@ void APP_DeviceCustomHIDInitialize()
 ********************************************************************/
 void APP_DeviceCustomHIDTasks()
 {   
+    //enum CUSTOM_HID_DEMO_COMMANDS nire_C_HID_DEM_COM;
     /* If the USB device isn't configured yet, we can't really do anything
      * else since we don't have a host to talk to.  So jump back to the
      * top of the while loop. */
@@ -118,25 +120,25 @@ void APP_DeviceCustomHIDTasks()
     
     //Check if we have received an OUT data packet from the host
     if(HIDRxHandleBusy(USBOutHandle) == false)
-    
-    {
-        /*
+    {   
         //We just received a packet of data from the USB host.
         //Check the first uint8_t of the packet to see what command the host
         //application software wants us to fulfill.
-      
-        switch(ReceivedDataBuffer[0])				//Look at the data the host sent, to see what kind of application specific command it sent.
+       nire_C_HID_DEM_COM=ReceivedDataBuffer[0];
+        switch(nire_C_HID_DEM_COM)				//Look at the data the host sent, to see what kind of application specific command it sent.
         {
-           
+            /*
             case COMMAND_TOGGLE_LED:  //Toggle LEDs command
                 LED_Toggle(LED_USB_DEVICE_HID_CUSTOM);
             break;
+            
             case COMMAND_GET_BUTTON_STATUS_S2:  //Get push button state
                 //Check to make sure the endpoint/buffer is free before we modify the contents
                 if(!HIDTxHandleBusy(USBInHandle))
                 {
                     ToSendDataBuffer[0] = COMMAND_GET_BUTTON_STATUS_S2;				//Echo back to the host PC the command we are fulfilling in the first uint8_t.  In this case, the Get Pushbutton State command.
-                    
+                    ToSendDataBuffer[1] = 0x00;
+                  
                     if(BUTTON_IsPressed(BUTTON_S2) == false)	//pushbutton not pressed, pull up resistor on circuit board is pulling the PORT pin high
                     {
                             ToSendDataBuffer[1] = 0x01;
@@ -145,15 +147,18 @@ void APP_DeviceCustomHIDTasks()
                     {
                             ToSendDataBuffer[1] = 0x00;
                     }
+                      
                     //Prepare the USB module to send the data packet to the host
                     USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
                 }
-           break;
-        //Código nuevo  usuario
-        //Cuando se pulsa el botón S3 desde el PC en respuesta enciende el Led D4
+           break; 
+           */
+        /*
             case COMMAND_TOGGLE_LED_D4:  //Toggle LEDs command
                LED_Toggle(LED_D4_TEST);
             break;
+            //Código nuevo  usuario
+            //Cuando se pulsa el botón S3 desde el PC en respuesta enciende el Led D4
             case COMMAND_GET_BUTTON_STATUS_S3:  //Get push button state
                 //Check to make sure the endpoint/buffer is free before we modify the contents
                 if(!HIDTxHandleBusy(USBInHandle))
@@ -171,7 +176,40 @@ void APP_DeviceCustomHIDTasks()
                     USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
                 }
             break;
-                //Fín de código nuevo de usuario
+            */    
+         case COMMAND_READ_V0:
+         {
+         uint16_t vo=0;
+         //Check to make sure the endpoint/buffer is free before we modify the contents
+                    if(!HIDTxHandleBusy(USBInHandle))
+                    {
+                        vo = Vo_Read10bit(COMMAND_READ_V0);
+            
+                        ToSendDataBuffer[0] = COMMAND_READ_V0;  	//Echo back to the host the command we are fulfilling in the first uint8_t.  In this case, the Read POT (analog voltage) command.
+                        ToSendDataBuffer[1] = (uint8_t)vo; //LSB
+                        ToSendDataBuffer[2] = vo >> 8;     //MSB
+
+
+                        //Prepare the USB module to send the data packet to the host
+                        USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
+                    }
+         }
+         break;
+            case COMMAND_REF_VO:
+            {
+               
+                if(!HIDTxHandleBusy(USBInHandle))
+                {
+                    vo_ref [0]=nire_C_HID_DEM_COM;
+                    vo_ref [1]=ReceivedDataBuffer[1];
+                    vo_ref [2]=ReceivedDataBuffer[2];
+                    vo_ref_Write(vo_ref);
+                    
+                }
+                
+            }   
+         break;
+         /*
             case COMMAND_READ_POTENTIOMETER:	//Read POT command.  Uses ADC to measure an analog voltage on one of the ANxx I/O pins, and returns the result to the host
                 {
                     uint16_t pot;
@@ -209,7 +247,7 @@ void APP_DeviceCustomHIDTasks()
                 settings.stepResolutionMode=ReceivedDataBuffer[5];
                 controlModeSelect();
                 setupMovimientoContinuo();
-                /*Check to make sure the endpoint/buffer is free before we modify the contents
+                //Check to make sure the endpoint/buffer is free before we modify the contents
                 if(!HIDTxHandleBusy(USBInHandle))
                 {
                     ToSendDataBuffer[0] = COMMAND_MOVIMIENTO_CONTINUO;	
@@ -226,7 +264,7 @@ void APP_DeviceCustomHIDTasks()
                 //Prepare the USB module to send the data packet to the host
                     USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
                 }
-                                      
+                                       
             }
             
                     break;
@@ -260,9 +298,10 @@ void APP_DeviceCustomHIDTasks()
                 break;
             case COMMAND_STOP_MOVIMIENTO_CONTINUO:
                 {
+                   
                     stopMovimientoContinuo();
                 //Check to make sure the endpoint/buffer is free before we modify the contents
-                 //
+                
                 if(!HIDTxHandleBusy(USBInHandle))
                 {
                     ToSendDataBuffer[0] = COMMAND_STOP_MOVIMIENTO_CONTINUO;	
@@ -274,12 +313,23 @@ void APP_DeviceCustomHIDTasks()
                     //Prepare the USB module to send the data packet to the host
                     USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
                 }
-                 
+                
                 }
             break;
-            
-        }
-        */
+            */
+            case  COMMAND_ON_BUCK:
+            {
+                while (BusyUSART());
+            TXREG=COMMAND_ON_BUCK;
+            }
+            break;
+            case  COMMAND_OFF_BUCK:
+            {
+                while (BusyUSART());
+            TXREG=COMMAND_OFF_BUCK;
+            }
+            break;
+             }
         //Re-arm the OUT endpoint, so we can receive the next OUT data packet 
         //that the host may try to send us.
         USBOutHandle = HIDRxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ReceivedDataBuffer[0], 64);

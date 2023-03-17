@@ -12,14 +12,14 @@
 #include "usb_device_hid.h"
 #include "app_device_custom_hid.h"
 #include "app_led_usb_status.h"
-
-
-
+#include <usart.h>
+#include "serial.h"
 MAIN_RETURN main(void)
 {
     SYSTEM_Initialize(SYSTEM_STATE_USB_START);
     USBDeviceInit();
     USBDeviceAttach();
+    InitializeUsart();
     //TIMER0_SetConfiguration();
 // ***************************************************************************** 
 //    Initializes settings of the TC78H to default.

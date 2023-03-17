@@ -144,8 +144,8 @@ please contact mla_licensing@microchip.com
 //----- BDnSTAT bit definitions -----------------------------------------------
 #define _BSTALL     0x04        //Buffer Stall enable
 #define _DTSEN      0x08        //Data Toggle Synch enable
-#define _INCDIS     0x10        //Address increment disable
-#define _KEN        0x20        //SIE keeps buff descriptors enable
+#define _INCDIS     0x00//0x10        //Address increment disable 18f2450DS
+#define _KEN        0x00//0x20        //SIE keeps buff descriptors enable 18f2450DS
 #define _DAT0       0x00        //DATA0 packet expected next
 #define _DAT1       0x40        //DATA1 packet expected next
 #define _DTSMASK    0x40        //DTS Mask
@@ -271,11 +271,11 @@ typedef union _BD_STAT
     struct{
         //If the CPU owns the buffer then these are the values
         unsigned BC8:1;         //bit 8 of the byte count
-        unsigned BC9:1;         //bit 9 of the byte count
-        unsigned BSTALL:1;      //Buffer Stall Enable
+        unsigned BC9:1;         //bit 9 of the byte count 
+        unsigned BSTALL:1;      //Buffer Stall Enable deshabilitado
         unsigned DTSEN:1;       //Data Toggle Synch Enable
-        unsigned INCDIS:1;      //Address Increment Disable
-        unsigned KEN:1;         //BD Keep Enable
+        unsigned INCDIS:1;      //Address Increment Disable 18f2450 0 antes 1
+        unsigned KEN:1;         //BD Keep Enable 18f2450 0 antes 1
         unsigned DTS:1;         //Data Toggle Synch Value
         unsigned UOWN:1;        //USB Ownership
     };
@@ -322,9 +322,9 @@ typedef union __USTAT
     struct
     {
         unsigned char filler1:1;
-        unsigned char ping_pong:1;
+        unsigned char ping_pong:2; //era 1
         unsigned char direction:1;
-        unsigned char endpoint_number:4;
+        unsigned char endpoint_number:4; //era 4
     };
     uint8_t Val;
 } USTAT_FIELDS;

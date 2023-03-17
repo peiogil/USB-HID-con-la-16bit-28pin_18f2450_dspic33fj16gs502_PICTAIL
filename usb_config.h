@@ -115,7 +115,7 @@ please contact mla_licensing@microchip.com
 //and it never uses host to device control transfers with data stage, then
 //it is not required to enable the USB_ENABLE_STATUS_STAGE_TIMEOUTS feature.
 
-#define USB_ENABLE_STATUS_STAGE_TIMEOUTS    //Comment this out to disable this feature.  
+//#define USB_ENABLE_STATUS_STAGE_TIMEOUTS    //Comment this out to disable this feature.  
 
 //Section 9.2.6 of the USB 2.0 specifications indicate that:
 //1.  Control transfers with no data stage: Status stage must complete within 

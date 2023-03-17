@@ -18,8 +18,8 @@ extern "C" {
 #ifdef	__cplusplus
 }
 #endif
-
-#endif	/* APP_DEVICE_CUSTOM_HID_H */
+#include <stdint.h>
+//#include "18F2450_importado/typedefs.h"
 /*******************************************************************************
 Copyright 2016 Microchip Technology Inc. (www.microchip.com)
 
@@ -83,15 +83,25 @@ void APP_DeviceCustomHIDStart(void);
 * Output: None
 *
 ********************************************************************/
-void APP_DeviceCustomHIDTasks(void);
+typedef unsigned char byte;
 
+void APP_DeviceCustomHIDTasks(void);
+uint16_t Vo_Read10bit(byte);
 /** DEFINITIONS OF COMMANDS ****************************************/
-enum
+enum CUSTOM_HID_DEMO_COMMANDS
+
 {
     
     COMMAND_ON_BUCK=0xA0, 
     COMMAND_OFF_BUCK=0xA1,
-    
+    COMMAND_REF_VO=0XA2,
+    COMMAND_READ_V0=0xA3,
             
-} CUSTOM_HID_DEMO_COMMANDS;
+} nire_C_HID_DEM_COM;
 
+
+byte tensionSalidaBuck2,ordenUSB, count;
+byte vo_ref[3];
+
+void vo_ref_Write(byte *);
+#endif	/* APP_DEVICE_CUSTOM_HID_H */

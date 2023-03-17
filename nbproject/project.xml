@@ -3,8 +3,8 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>16BIT_28_PIN_18F2450</name>
-            <creation-uuid>f28511b5-4f1e-46d5-bdc4-1d8b2e692bf1</creation-uuid>
+            <name>16BIT_28_PIN_18F2450_XC8_V1</name>
+            <creation-uuid>01d6e9c1-11ea-48cb-ab0e-d57b334034cd</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions/>
@@ -13,7 +13,9 @@
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>.</sourceRootElem>
+                <sourceRootElem/>
+                <sourceRootElem>D:/D/GARRANTZITSUENA/ESKOLAK/MASTER_EP/PRÁCTICAS/FLY-BACK/FBDig/Fb_dig_soft/DCDC_PICTAIL_PC_18F45K50_DSP/DCDC_PICTAIL_PC_18F45K50_DSP.X</sourceRootElem>
+                <sourceRootElem>D:/D/GARRANTZITSUENA/ESKOLAK/MASTER_EP/PRÁCTICAS/FLY-BACK/FBDig/Fb_dig_soft/DCDC_PTAIL_PC_18F2450_DSP/DSP33FJ/DSP33FJ_PARAM_PID/BUCK2_16B_28P_TIPO_II_5/inc</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

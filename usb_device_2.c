@@ -718,9 +718,9 @@ void USBDeviceTasks(void)
         }
         USBClearInterruptFlag(USBSOFIFReg,USBSOFIFBitNum);
 
-        #if defined(__XC8__) || defined(__C18__)
-            USBIncrement1msInternalTimers();
-        #endif
+       #if defined(__XC8__) || defined(__C18__)
+      USBIncrement1msInternalTimers();     
+       #endif
 
         #if defined(USB_ENABLE_STATUS_STAGE_TIMEOUTS)
             //Supporting this feature requires a 1ms time base for keeping track of the timeout interval.

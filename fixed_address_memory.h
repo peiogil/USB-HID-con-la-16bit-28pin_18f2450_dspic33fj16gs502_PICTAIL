@@ -23,8 +23,10 @@ please contact mla_licensing@microchip.com
 #define FIXED_ADDRESS_MEMORY
 
 #if(__XC8_VERSION < 2000)
-    #define HID_CUSTOM_OUT_DATA_BUFFER_ADDRESS      @0x500
-    #define HID_CUSTOM_IN_DATA_BUFFER_ADDRESS     @0x540
+    //#define HID_CUSTOM_OUT_DATA_BUFFER_ADDRESS      @0x500
+    //#define HID_CUSTOM_IN_DATA_BUFFER_ADDRESS     @0x540
+#define HID_CUSTOM_OUT_DATA_BUFFER_ADDRESS      @0x480 //64 bytes 18f2450 en DAccess RAM
+#define HID_CUSTOM_IN_DATA_BUFFER_ADDRESS     @0x4C0    //para el 18f2450
 #else
     #define HID_CUSTOM_OUT_DATA_BUFFER_ADDRESS      __at(0x500)
     #define HID_CUSTOM_IN_DATA_BUFFER_ADDRESS     __at(0x540)
