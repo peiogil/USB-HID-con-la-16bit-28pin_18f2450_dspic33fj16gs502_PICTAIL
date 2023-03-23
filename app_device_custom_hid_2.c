@@ -198,129 +198,26 @@ void APP_DeviceCustomHIDTasks()
             case COMMAND_REF_VO:
             {
                
-                if(!HIDTxHandleBusy(USBInHandle))
-                {
-                    vo_ref [0]=nire_C_HID_DEM_COM;
-                    vo_ref [1]=ReceivedDataBuffer[1];
-                    vo_ref [2]=ReceivedDataBuffer[2];
-                    vo_ref_Write(vo_ref);
+    //if(!HIDTxHandleBusy(USBInHandle)) // anulada este condición es para meter datos al host
+                
+                    buffer_user_usb [0]=nire_C_HID_DEM_COM;
+                    buffer_user_usb [1]=ReceivedDataBuffer[1];
+                    buffer_user_usb [2]=ReceivedDataBuffer[2];
+                    vo_ref_Write(buffer_user_usb);
                     
-                }
+              
                 
             }   
          break;
-         /*
-            case COMMAND_READ_POTENTIOMETER:	//Read POT command.  Uses ADC to measure an analog voltage on one of the ANxx I/O pins, and returns the result to the host
-                {
-                    uint16_t pot;
-
-                    //Check to make sure the endpoint/buffer is free before we modify the contents
-                    if(!HIDTxHandleBusy(USBInHandle))
-                    {
-                        //Use ADC to read the I/O pin voltage.  See the relevant HardwareProfile - xxxxx.h file for the I/O pin that it will measure.
-                        //Some demo boards, like the PIC18F87J50 FS USB Plug-In Module board, do not have a potentiometer (when used stand alone).
-                        //This function call will still measure the analog voltage on the I/O pin however.  To make the demo more interesting, it
-                        //is suggested that an external adjustable analog voltage should be applied to this pin.
-
-                        pot = ADC_Read10bit(ADC_CHANNEL_POTENTIOMETER);
-
-                        ToSendDataBuffer[0] = 0x37;  	//Echo back to the host the command we are fulfilling in the first uint8_t.  In this case, the Read POT (analog voltage) command.
-                        ToSendDataBuffer[1] = (uint8_t)pot; //LSB
-                        ToSendDataBuffer[2] = pot >> 8;     //MSB
-
-
-                        //Prepare the USB module to send the data packet to the host
-                        USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
-                    }
-                }
-                break;
-              
-               case COMMAND_MOVIMIENTO_CONTINUO:
-            {
-                settings.byte_TMROL=ReceivedDataBuffer[1];
-                settings.byte_TMROH=ReceivedDataBuffer[2];
-               if (ReceivedDataBuffer[3]== 1)
-                   settings.direction=true;
-               else
-                   settings.direction=false;
-                settings.controlMode=ReceivedDataBuffer[4];
-                settings.stepResolutionMode=ReceivedDataBuffer[5];
-                controlModeSelect();
-                setupMovimientoContinuo();
-                //Check to make sure the endpoint/buffer is free before we modify the contents
-                if(!HIDTxHandleBusy(USBInHandle))
-                {
-                    ToSendDataBuffer[0] = COMMAND_MOVIMIENTO_CONTINUO;	
-                   
-               
-                if (setupMovimientoContinuo()==true)
-                {
-                        ToSendDataBuffer[1] = 0x01;
-                }
-                else
-                {
-                        ToSendDataBuffer[1] = 0x00;
-                }  
-                //Prepare the USB module to send the data packet to the host
-                    USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
-                }
-                                       
-            }
-            
-                    break;
-            
-// checks the status of the ERR net.
-// If ERR reads low, then one of three things is wrong:
-// Thermal shutdown (TSD), Overcurrent (ISD), Motor Load Open (OPD)
-// returns true if things are good and there is no error detected
-            case COMMAND_READ_ERROR_STATUS:
-                {
-                //Check to make sure the endpoint/buffer is free before we modify the contents
-                if(!HIDTxHandleBusy(USBInHandle))
-                {
-                    ToSendDataBuffer[0] = COMMAND_READ_ERROR_STATUS;//Echo back to the host PC the command we are fulfilling in the first uint8_t.
-                    if (errorStat()==true)
-                {
-                        ToSendDataBuffer[1] = 0x01;
-                }
-                else
-                {
-                        ToSendDataBuffer[1] = 0x00;
-                }  
-                //Prepare the USB module to send the data packet to the host
-            USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
-                }
-                }
-                break;
-            case COMMAND_CONTROL_MODE_SELECT:
-            {
-            }
-                break;
-            case COMMAND_STOP_MOVIMIENTO_CONTINUO:
-                {
-                   
-                    stopMovimientoContinuo();
-                //Check to make sure the endpoint/buffer is free before we modify the contents
-                
-                if(!HIDTxHandleBusy(USBInHandle))
-                {
-                    ToSendDataBuffer[0] = COMMAND_STOP_MOVIMIENTO_CONTINUO;	
-                    //Echo back to the host PC the command we are fulfilling in the first uint8_t.
-                                       // if (stopMovimientoContinuo()==true)
-                         ToSendDataBuffer[1] = 0x01 ;
-                    //else
-                        //ToSendDataBuffer[1] = 0x00 ;
-                    //Prepare the USB module to send the data packet to the host
-                    USBInHandle = HIDTxPacket(CUSTOM_DEVICE_HID_EP, (uint8_t*)&ToSendDataBuffer[0],64);
-                }
-                
-                }
-            break;
-            */
+         
             case  COMMAND_ON_BUCK:
             {
-                while (BusyUSART());
-            TXREG=COMMAND_ON_BUCK;
+                //Lo primero es enviar la referencia de tensión antes de encender    
+                buffer_user_usb [0]=COMMAND_REF_VO;
+                    buffer_user_usb [1]=ReceivedDataBuffer[1]; //la referencia de tensión byte L
+                    buffer_user_usb [2]=ReceivedDataBuffer[2]; //la referencia de tensión byte H
+                    on_buck2();
+                
             }
             break;
             case  COMMAND_OFF_BUCK:

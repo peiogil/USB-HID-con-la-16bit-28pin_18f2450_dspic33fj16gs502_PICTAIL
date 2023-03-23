@@ -67,9 +67,9 @@ void interrupt low_priority SerialReceiveInterrupt(void)
 switch(nire_C_HID_DEM_COM)
 {
 
-case 0xA2:
+case COMMAND_REF_VO:
     //La rutina vo_ref_write 1º envía el comando de vo_referencia
-    //en respuesta dspic provoca in terrupcio. Haciendo count=0 permite que
+    //en respuesta dspic provoca una terrupción. Haciendo count=0 permite que
     // la rutina vo:_ref siga el proceso de enviar 2 datos
     limpiarRX=ReadUSART();
     count=0;
@@ -77,7 +77,7 @@ break;
 
 //0xA3 lectura de la tensión de salida se le llama 2 veces porque son
 //10 bits. La llamada doble se gestiona desde la función ServiceRequests en Vo_Reac.c
-case 0xA3:
+case COMMAND_READ_V0:
 tensionSalidaBuck2=ReadUSART(); //aquí sí que sirve la lectura del registro
 		count=0;
 break;

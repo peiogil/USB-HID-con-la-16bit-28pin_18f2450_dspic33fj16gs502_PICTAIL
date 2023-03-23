@@ -99,9 +99,8 @@ enum CUSTOM_HID_DEMO_COMMANDS
             
 } nire_C_HID_DEM_COM;
 
-
 byte tensionSalidaBuck2,ordenUSB, count;
-byte vo_ref[3];
-
+byte buffer_user_usb[10];
+void on_buck2(void);
 void vo_ref_Write(byte *);
 #endif	/* APP_DEVICE_CUSTOM_HID_H */
